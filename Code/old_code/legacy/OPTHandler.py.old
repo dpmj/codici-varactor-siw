@@ -1,0 +1,143 @@
+import VNAHandler as VNA
+import ERReval as ERR
+import FILTHandler as FILT
+
+def Optimize (spi, state0, mask, step0, maxiter, host, port):
+    errortol=0.001
+    minstep=(30/4096)
+    
+    iteration=0
+    dimension=len(state0)
+    explored=[0]*dimension
+    converged=[0]*dimension
+    stepn=[0]*dimension
+    step=[0]*dimension
+    step[0]=step0
+    state=state0
+    
+    #Measure filter in state0
+    mat = FILT.measure(spi, state, host, port)
+
+    #Eval its error En
+    En = ERR.evalerror(mat, mask)
+
+    while iteration<maxiter:
+        iteration=iteration+1
+        print(iteration, end=': ')
+        
+        #Update exploration flag
+        explored[0]=1
+        
+        #EVALUAR
+        #Generate new state
+        state_p=[0]*dimension
+        for i in range(dimension):
+            state_p[i]=state[i]+step[i]
+            print(step[i], end=', ')
+
+        
+        #Measure filter in new state
+        mat = FILT.measure(spi, state_p, host, port)
+        
+        #Eval its error E
+        E = ERR.evalerror(mat, mask)
+        print(E)
+
+        #COMPARAR ERROR
+        if E<En:
+            #ASUMIR NUEVO PUNTO
+            state=state_p
+            
+            #Actualizar error
+            En=E
+            
+            #Flag convergido (actualizado)
+            converged[0]=1
+
+            #SI E<errortol: SALIDA con SUPERADO
+            if E<errortol:
+                print ('Current state accomplishes conditions')
+                return ['ACCOMPLISHED', state, mat]
+
+            #COMPARAR STEP
+            if step==stepn:
+                #MISMO STEP
+                stepn=list(step)  #Hace copia
+            else:
+                #STEP<MINIMO?
+                if step<=minstep:
+                    #CAMBIO DE PARAMETRO
+                    #|STEP| = |STEP0|
+                    stepn=[0]*dimension        #Step anterior como si 0
+                    step.append(step.pop(0))   #Rota una posicion a la derecha
+                    for i in range(dimension): #Resets magnitude to step0
+                        if step[i]!=0:
+                            step[i]=step0
+
+                    #Actualizar flag exploracion
+                    explored.append(explored.pop(0))
+                    
+                    #Actualizar flag convergencia SI
+                    converged.append(converged.pop(0))
+                    converged[0]=1
+                    
+                else:
+                    #SI NO ES LA RACHA DE SALIDA, STEP/2
+                    for i in range(dimension):
+                        if step[i] != 0 or abs(step[i]) != step0:
+                            step[i]=step[i]/2
+                    
+                    #ELSE STEP=
+
+        else:
+            #COMPARAR STEP
+            
+            for i in range(len(step)):
+                print(list(map(abs, step))[i] == list(map(abs, stepn))[i], end=', ')
+                
+            if list(map(abs, step)) == list(map(abs, stepn)): #|STEP|==|STEPN|
+                print('== ENTRA')
+                #STEP<MINIMO?)
+
+                for i in range(len(step)):
+                    print(list(map(abs, step))[i] <= list([minstep]*dimension)[i], end=', ')
+
+                if list(map(abs, step)) <= list([minstep]*dimension): #Entra cuando 1 True
+                    print('<= ENTRA')
+                    #SI se ha estancado: SALIDA con OPTIMIZADO
+                    if converged == [1]*dimension:
+                        print ('Current state is already optimized')
+                        return ['OPTIMIZED', state, mat]
+
+                    #CAMBIO DE PARAMETRO
+                    #|STEP| = |STEP0|
+                    print('Cambio de parametro')
+                    stepn=[0]*dimension        #Step anterior como si 0
+                    step.append(step.pop(0))   #Rota una posicion a la derecha
+                    for i in range(dimension): #Resets magnitude to step0
+                        if step[i]!=0:
+                            step[i]=step0
+                            
+                    #Actualizar flag exploracion
+                    explored.append(explored.pop(0))
+                    #Actualizar flag convergencia NO
+                    converged.append(converged.pop(0))
+                    converged[0]=0
+                else:
+                    print('<= NO ENTRA')
+                    #STEP/2
+                    stepn=list(step)        #Hace copia
+                    for i in range(dimension):
+                        if step[i] != 0:
+                            step[i]=step[i]/2
+
+            else:
+                print('== NO ENTRA')
+                #STEP=-STEP
+                stepn=list(step)
+                for i in range(dimension):
+                        if step[i] != 0:
+                            step[i]=-step[i]
+
+    print ('Maximun iterations reached')
+    return ['MAXITER', state, mat]

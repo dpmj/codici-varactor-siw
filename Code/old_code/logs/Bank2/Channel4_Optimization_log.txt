@@ -1,0 +1,220 @@
+Channel4 Optimization log
+
+State0 total error: 3067.3839116096497
+1: Step = 0.4688. State: 5.4688, 7.5000, 4.3000, Total Error =  3115.7749 NO
+2: Step = -0.4688. State: 4.5312, 7.5000, 4.3000, Total Error =  2981.8113 OK
+3: Step = -0.4688. State: 4.0625, 7.5000, 4.3000, Total Error =  2827.6283 OK
+4: Step = -0.4688. State: 3.5938, 7.5000, 4.3000, Total Error =  2566.1578 OK
+5: Step = -0.4688. State: 3.1250, 7.5000, 4.3000, Total Error =  2054.9897 OK
+6: Step = -0.4688. State: 2.6562, 7.5000, 4.3000, Total Error =  1630.3483 OK
+7: Step = -0.4688. State: 2.1875, 7.5000, 4.3000, Total Error =  1912.2600 NO
+8: Step = -0.2344. State: 2.4219, 7.5000, 4.3000, Total Error =  1695.6885 NO
+9: Step = 0.2344. State: 2.8906, 7.5000, 4.3000, Total Error =  1781.5063 NO
+10: Step = 0.1172. State: 2.7734, 7.5000, 4.3000, Total Error =  1668.8879 NO
+11: Step = -0.1172. State: 2.5391, 7.5000, 4.3000, Total Error =  1628.6340 OK
+12: Step = -0.0586. State: 2.4805, 7.5000, 4.3000, Total Error =  1649.5457 NO
+13: Step = 0.0586. State: 2.5977, 7.5000, 4.3000, Total Error =  1627.6477 OK
+14: Step = 0.0293. State: 2.6270, 7.5000, 4.3000, Total Error =  1622.9144 OK
+15: Step = 0.0146. State: 2.6416, 7.5000, 4.3000, Total Error =  1631.2846 NO
+16: Step = -0.0146. State: 2.6123, 7.5000, 4.3000, Total Error =  1615.2759 OK
+17: Step = -0.0073. State: 2.6050, 7.5000, 4.3000, Total Error =  1613.8326 OK
+Converged vector: 1, 0, 1, 
+
+18: Step = 0.4688. State: 2.6050, 7.9688, 4.3000, Total Error =  1844.3334 NO
+19: Step = -0.4688. State: 2.6050, 7.0312, 4.3000, Total Error =  1317.7038 OK
+20: Step = -0.4688. State: 2.6050, 6.5625, 4.3000, Total Error =   879.7796 OK
+21: Step = -0.4688. State: 2.6050, 6.0938, 4.3000, Total Error =   216.3479 OK
+22: Step = -0.4688. State: 2.6050, 5.6250, 4.3000, Total Error =   115.3875 OK
+23: Step = -0.4688. State: 2.6050, 5.1562, 4.3000, Total Error =   234.1127 NO
+24: Step = -0.2344. State: 2.6050, 5.3906, 4.3000, Total Error =   143.8291 NO
+25: Step = 0.2344. State: 2.6050, 5.8594, 4.3000, Total Error =   130.7123 NO
+26: Step = 0.1172. State: 2.6050, 5.7422, 4.3000, Total Error =    66.5841 OK
+27: Step = 0.0586. State: 2.6050, 5.8008, 4.3000, Total Error =    91.0904 NO
+28: Step = -0.0586. State: 2.6050, 5.6836, 4.3000, Total Error =    90.0749 NO
+29: Step = -0.0293. State: 2.6050, 5.7129, 4.3000, Total Error =    66.3300 OK
+30: Step = -0.0146. State: 2.6050, 5.6982, 4.3000, Total Error =   127.3896 NO
+31: Step = 0.0146. State: 2.6050, 5.7275, 4.3000, Total Error =   138.0530 NO
+32: Step = 0.0073. State: 2.6050, 5.7202, 4.3000, Total Error =    89.3983 NO
+33: Step = -0.0073. State: 2.6050, 5.7056, 4.3000, Total Error =   115.1793 NO
+Converged vector: 0, 1, 1, 
+
+34: Step = 0.4688. State: 2.6050, 5.7129, 4.7687, Total Error =   427.0899 NO
+35: Step = -0.4688. State: 2.6050, 5.7129, 3.8312, Total Error =  1145.2121 NO
+36: Step = -0.2344. State: 2.6050, 5.7129, 4.0656, Total Error =   426.0962 NO
+37: Step = 0.2344. State: 2.6050, 5.7129, 4.5344, Total Error =   131.0476 NO
+38: Step = 0.1172. State: 2.6050, 5.7129, 4.4172, Total Error =    43.7374 OK
+39: Step = 0.0586. State: 2.6050, 5.7129, 4.4758, Total Error =    96.9477 NO
+40: Step = -0.0586. State: 2.6050, 5.7129, 4.3586, Total Error =    42.3171 OK
+41: Step = -0.0293. State: 2.6050, 5.7129, 4.3293, Total Error =   104.3025 NO
+42: Step = 0.0293. State: 2.6050, 5.7129, 4.3879, Total Error =    39.3393 OK
+43: Step = 0.0146. State: 2.6050, 5.7129, 4.4025, Total Error =    92.5740 NO
+44: Step = -0.0146. State: 2.6050, 5.7129, 4.3732, Total Error =    49.7659 NO
+45: Step = -0.0073. State: 2.6050, 5.7129, 4.3806, Total Error =    39.3953 NO
+46: Step = 0.0073. State: 2.6050, 5.7129, 4.3952, Total Error =    68.6237 NO
+Converged vector: 0, 1, 1, 
+
+47: Step = 0.4688. State: 3.0737, 5.7129, 4.3879, Total Error =   853.0416 NO
+48: Step = -0.4688. State: 2.1362, 5.7129, 4.3879, Total Error =  1466.7137 NO
+49: Step = -0.2344. State: 2.3706, 5.7129, 4.3879, Total Error =   691.5655 NO
+50: Step = 0.2344. State: 2.8394, 5.7129, 4.3879, Total Error =   215.4887 NO
+51: Step = 0.1172. State: 2.7222, 5.7129, 4.3879, Total Error =   107.2612 NO
+52: Step = -0.1172. State: 2.4878, 5.7129, 4.3879, Total Error =   166.7148 NO
+53: Step = -0.0586. State: 2.5464, 5.7129, 4.3879, Total Error =    88.8028 NO
+54: Step = 0.0586. State: 2.6636, 5.7129, 4.3879, Total Error =    51.6002 NO
+55: Step = 0.0293. State: 2.6343, 5.7129, 4.3879, Total Error =    29.2999 OK
+56: Step = 0.0146. State: 2.6489, 5.7129, 4.3879, Total Error =    62.7979 NO
+57: Step = -0.0146. State: 2.6196, 5.7129, 4.3879, Total Error =    44.8543 NO
+58: Step = -0.0073. State: 2.6270, 5.7129, 4.3879, Total Error =    40.0634 NO
+59: Step = 0.0073. State: 2.6416, 5.7129, 4.3879, Total Error =    53.3939 NO
+Converged vector: 0, 1, 1, 
+
+60: Step = 0.4688. State: 2.6343, 6.1816, 4.3879, Total Error =   391.9466 NO
+61: Step = -0.4688. State: 2.6343, 5.2441, 4.3879, Total Error =   124.0296 NO
+62: Step = -0.2344. State: 2.6343, 5.4785, 4.3879, Total Error =    22.2115 OK
+63: Step = -0.1172. State: 2.6343, 5.3613, 4.3879, Total Error =    52.8255 NO
+64: Step = 0.1172. State: 2.6343, 5.5957, 4.3879, Total Error =    22.5142 NO
+65: Step = 0.0586. State: 2.6343, 5.5371, 4.3879, Total Error =    17.2992 OK
+66: Step = 0.0293. State: 2.6343, 5.5664, 4.3879, Total Error =    18.2726 NO
+67: Step = -0.0293. State: 2.6343, 5.5078, 4.3879, Total Error =    44.8472 NO
+68: Step = -0.0146. State: 2.6343, 5.5225, 4.3879, Total Error =    17.1612 OK
+69: Step = -0.0073. State: 2.6343, 5.5151, 4.3879, Total Error =    28.6985 NO
+70: Step = 0.0073. State: 2.6343, 5.5298, 4.3879, Total Error =    34.6610 NO
+Converged vector: 0, 1, 1, 
+
+71: Step = 0.4688. State: 2.6343, 5.5225, 4.8566, Total Error =   466.1339 NO
+72: Step = -0.4688. State: 2.6343, 5.5225, 3.9191, Total Error =   834.6696 NO
+73: Step = -0.2344. State: 2.6343, 5.5225, 4.1535, Total Error =   312.3718 NO
+74: Step = 0.2344. State: 2.6343, 5.5225, 4.6223, Total Error =   136.4940 NO
+75: Step = 0.1172. State: 2.6343, 5.5225, 4.5051, Total Error =    31.9077 NO
+76: Step = -0.1172. State: 2.6343, 5.5225, 4.2707, Total Error =   111.7495 NO
+77: Step = -0.0586. State: 2.6343, 5.5225, 4.3293, Total Error =   120.6348 NO
+78: Step = 0.0586. State: 2.6343, 5.5225, 4.4465, Total Error =    26.3471 NO
+79: Step = 0.0293. State: 2.6343, 5.5225, 4.4172, Total Error =     8.8659 OK
+80: Step = 0.0146. State: 2.6343, 5.5225, 4.4318, Total Error =     7.0052 OK
+81: Step = 0.0073. State: 2.6343, 5.5225, 4.4392, Total Error =    20.7134 NO
+82: Step = -0.0073. State: 2.6343, 5.5225, 4.4245, Total Error =    12.3038 NO
+Converged vector: 0, 1, 1, 
+
+83: Step = 0.4688. State: 3.1030, 5.5225, 4.4318, Total Error =   964.9727 NO
+84: Step = -0.4688. State: 2.1655, 5.5225, 4.4318, Total Error =  1192.0579 NO
+85: Step = -0.2344. State: 2.3999, 5.5225, 4.4318, Total Error =   252.1231 NO
+86: Step = 0.2344. State: 2.8687, 5.5225, 4.4318, Total Error =   380.7504 NO
+87: Step = 0.1172. State: 2.7515, 5.5225, 4.4318, Total Error =    34.9651 NO
+88: Step = -0.1172. State: 2.5171, 5.5225, 4.4318, Total Error =   134.3926 NO
+89: Step = -0.0586. State: 2.5757, 5.5225, 4.4318, Total Error =    15.4957 NO
+90: Step = 0.0586. State: 2.6929, 5.5225, 4.4318, Total Error =    16.7694 NO
+91: Step = 0.0293. State: 2.6636, 5.5225, 4.4318, Total Error =    27.6271 NO
+92: Step = -0.0293. State: 2.6050, 5.5225, 4.4318, Total Error =    31.5380 NO
+93: Step = -0.0146. State: 2.6196, 5.5225, 4.4318, Total Error =    38.8327 NO
+94: Step = 0.0146. State: 2.6489, 5.5225, 4.4318, Total Error =    19.8504 NO
+95: Step = 0.0073. State: 2.6416, 5.5225, 4.4318, Total Error =    17.0836 NO
+96: Step = -0.0073. State: 2.6270, 5.5225, 4.4318, Total Error =    17.0300 NO
+Converged vector: 0, 1, 0, 
+
+97: Step = 0.4688. State: 2.6343, 5.9912, 4.4318, Total Error =   246.3129 NO
+98: Step = -0.4688. State: 2.6343, 5.0537, 4.4318, Total Error =   422.9636 NO
+99: Step = -0.2344. State: 2.6343, 5.2881, 4.4318, Total Error =    50.3244 NO
+100: Step = 0.2344. State: 2.6343, 5.7568, 4.4318, Total Error =    80.1825 NO
+101: Step = 0.1172. State: 2.6343, 5.6396, 4.4318, Total Error =    19.8858 NO
+102: Step = -0.1172. State: 2.6343, 5.4053, 4.4318, Total Error =    20.7666 NO
+103: Step = -0.0586. State: 2.6343, 5.4639, 4.4318, Total Error =    10.1401 NO
+104: Step = 0.0586. State: 2.6343, 5.5811, 4.4318, Total Error =    41.1360 NO
+105: Step = 0.0293. State: 2.6343, 5.5518, 4.4318, Total Error =     4.3524 OK
+106: Step = 0.0146. State: 2.6343, 5.5664, 4.4318, Total Error =    22.0450 NO
+107: Step = -0.0146. State: 2.6343, 5.5371, 4.4318, Total Error =    15.2847 NO
+108: Step = -0.0073. State: 2.6343, 5.5444, 4.4318, Total Error =    23.9693 NO
+109: Step = 0.0073. State: 2.6343, 5.5591, 4.4318, Total Error =     7.7731 NO
+Converged vector: 0, 0, 1, 
+
+110: Step = 0.4688. State: 2.6343, 5.5518, 4.9006, Total Error =   553.4678 NO
+111: Step = -0.4688. State: 2.6343, 5.5518, 3.9631, Total Error =   719.4925 NO
+112: Step = -0.2344. State: 2.6343, 5.5518, 4.1975, Total Error =   205.9822 NO
+113: Step = 0.2344. State: 2.6343, 5.5518, 4.6662, Total Error =   179.1927 NO
+114: Step = 0.1172. State: 2.6343, 5.5518, 4.5490, Total Error =    95.2858 NO
+115: Step = -0.1172. State: 2.6343, 5.5518, 4.3146, Total Error =    48.2483 NO
+116: Step = -0.0586. State: 2.6343, 5.5518, 4.3732, Total Error =    38.7817 NO
+117: Step = 0.0586. State: 2.6343, 5.5518, 4.4904, Total Error =    21.0316 NO
+118: Step = 0.0293. State: 2.6343, 5.5518, 4.4611, Total Error =    21.6081 NO
+119: Step = -0.0293. State: 2.6343, 5.5518, 4.4025, Total Error =     7.4298 NO
+120: Step = -0.0146. State: 2.6343, 5.5518, 4.4172, Total Error =    15.6822 NO
+121: Step = 0.0146. State: 2.6343, 5.5518, 4.4465, Total Error =    14.9666 NO
+122: Step = 0.0073. State: 2.6343, 5.5518, 4.4392, Total Error =    16.6176 NO
+123: Step = -0.0073. State: 2.6343, 5.5518, 4.4245, Total Error =    21.1512 NO
+Converged vector: 0, 1, 0, 
+
+124: Step = 0.4688. State: 3.1030, 5.5518, 4.4318, Total Error =  1049.2570 NO
+125: Step = -0.4688. State: 2.1655, 5.5518, 4.4318, Total Error =  1321.6832 NO
+126: Step = -0.2344. State: 2.3999, 5.5518, 4.4318, Total Error =   237.7054 NO
+127: Step = 0.2344. State: 2.8687, 5.5518, 4.4318, Total Error =   409.6340 NO
+128: Step = 0.1172. State: 2.7515, 5.5518, 4.4318, Total Error =    90.2663 NO
+129: Step = -0.1172. State: 2.5171, 5.5518, 4.4318, Total Error =    94.1530 NO
+130: Step = -0.0586. State: 2.5757, 5.5518, 4.4318, Total Error =    16.9920 NO
+131: Step = 0.0586. State: 2.6929, 5.5518, 4.4318, Total Error =    35.4746 NO
+132: Step = 0.0293. State: 2.6636, 5.5518, 4.4318, Total Error =    20.6816 NO
+133: Step = -0.0293. State: 2.6050, 5.5518, 4.4318, Total Error =     6.1549 NO
+134: Step = -0.0146. State: 2.6196, 5.5518, 4.4318, Total Error =    10.0029 NO
+135: Step = 0.0146. State: 2.6489, 5.5518, 4.4318, Total Error =    22.8065 NO
+136: Step = 0.0073. State: 2.6416, 5.5518, 4.4318, Total Error =    21.9028 NO
+137: Step = -0.0073. State: 2.6270, 5.5518, 4.4318, Total Error =     4.2935 OK
+Converged vector: 1, 0, 1, 
+
+138: Step = 0.4688. State: 2.6270, 6.0205, 4.4318, Total Error =   259.4506 NO
+139: Step = -0.4688. State: 2.6270, 5.0830, 4.4318, Total Error =   373.1675 NO
+140: Step = -0.2344. State: 2.6270, 5.3174, 4.4318, Total Error =    47.2430 NO
+141: Step = 0.2344. State: 2.6270, 5.7861, 4.4318, Total Error =    93.6325 NO
+142: Step = 0.1172. State: 2.6270, 5.6689, 4.4318, Total Error =    45.0078 NO
+143: Step = -0.1172. State: 2.6270, 5.4346, 4.4318, Total Error =    22.2418 NO
+144: Step = -0.0586. State: 2.6270, 5.4932, 4.4318, Total Error =    33.9326 NO
+145: Step = 0.0586. State: 2.6270, 5.6104, 4.4318, Total Error =    23.2698 NO
+146: Step = 0.0293. State: 2.6270, 5.5811, 4.4318, Total Error =    28.9698 NO
+147: Step = -0.0293. State: 2.6270, 5.5225, 4.4318, Total Error =     3.8607 OK
+148: Step = -0.0146. State: 2.6270, 5.5078, 4.4318, Total Error =    33.7285 NO
+149: Step = 0.0146. State: 2.6270, 5.5371, 4.4318, Total Error =     7.3534 NO
+150: Step = 0.0073. State: 2.6270, 5.5298, 4.4318, Total Error =    18.3536 NO
+151: Step = -0.0073. State: 2.6270, 5.5151, 4.4318, Total Error =     6.6074 NO
+Converged vector: 0, 1, 1, 
+
+152: Step = 0.4688. State: 2.6270, 5.5225, 4.9006, Total Error =   493.1691 NO
+153: Step = -0.4688. State: 2.6270, 5.5225, 3.9631, Total Error =   705.8552 NO
+154: Step = -0.2344. State: 2.6270, 5.5225, 4.1975, Total Error =   279.1564 NO
+155: Step = 0.2344. State: 2.6270, 5.5225, 4.6662, Total Error =   137.5065 NO
+156: Step = 0.1172. State: 2.6270, 5.5225, 4.5490, Total Error =    46.5271 NO
+157: Step = -0.1172. State: 2.6270, 5.5225, 4.3146, Total Error =    85.6380 NO
+158: Step = -0.0586. State: 2.6270, 5.5225, 4.3732, Total Error =    24.2227 NO
+159: Step = 0.0586. State: 2.6270, 5.5225, 4.4904, Total Error =    37.2195 NO
+160: Step = 0.0293. State: 2.6270, 5.5225, 4.4611, Total Error =     7.7368 NO
+161: Step = -0.0293. State: 2.6270, 5.5225, 4.4025, Total Error =    30.8534 NO
+162: Step = -0.0146. State: 2.6270, 5.5225, 4.4172, Total Error =     9.3883 NO
+163: Step = 0.0146. State: 2.6270, 5.5225, 4.4465, Total Error =    13.5472 NO
+164: Step = 0.0073. State: 2.6270, 5.5225, 4.4392, Total Error =    22.3012 NO
+165: Step = -0.0073. State: 2.6270, 5.5225, 4.4245, Total Error =    25.3806 NO
+Converged vector: 0, 1, 0, 
+
+166: Step = 0.4688. State: 3.0957, 5.5225, 4.4318, Total Error =  1120.5104 NO
+167: Step = -0.4688. State: 2.1582, 5.5225, 4.4318, Total Error =  1255.3280 NO
+168: Step = -0.2344. State: 2.3926, 5.5225, 4.4318, Total Error =   325.5908 NO
+169: Step = 0.2344. State: 2.8613, 5.5225, 4.4318, Total Error =   387.1052 NO
+170: Step = 0.1172. State: 2.7441, 5.5225, 4.4318, Total Error =    90.5562 NO
+171: Step = -0.1172. State: 2.5098, 5.5225, 4.4318, Total Error =   138.9210 NO
+172: Step = -0.0586. State: 2.5684, 5.5225, 4.4318, Total Error =    26.0136 NO
+173: Step = 0.0586. State: 2.6855, 5.5225, 4.4318, Total Error =    39.1517 NO
+174: Step = 0.0293. State: 2.6562, 5.5225, 4.4318, Total Error =    22.9947 NO
+175: Step = -0.0293. State: 2.5977, 5.5225, 4.4318, Total Error =    28.0119 NO
+176: Step = -0.0146. State: 2.6123, 5.5225, 4.4318, Total Error =     4.3414 NO
+177: Step = 0.0146. State: 2.6416, 5.5225, 4.4318, Total Error =    17.3722 NO
+178: Step = 0.0073. State: 2.6343, 5.5225, 4.4318, Total Error =    26.6158 NO
+179: Step = -0.0073. State: 2.6196, 5.5225, 4.4318, Total Error =    13.4075 NO
+Converged vector: 0, 0, 0, 
+
+180: Step = 0.4688. State: 2.6270, 5.9912, 4.4318, Total Error =   238.7693 NO
+181: Step = -0.4688. State: 2.6270, 5.0537, 4.4318, Total Error =   319.0468 NO
+182: Step = -0.2344. State: 2.6270, 5.2881, 4.4318, Total Error =    69.5326 NO
+183: Step = 0.2344. State: 2.6270, 5.7568, 4.4318, Total Error =    89.1742 NO
+184: Step = 0.1172. State: 2.6270, 5.6396, 4.4318, Total Error =    28.2716 NO
+185: Step = -0.1172. State: 2.6270, 5.4053, 4.4318, Total Error =    22.8329 NO
+186: Step = -0.0586. State: 2.6270, 5.4639, 4.4318, Total Error =    36.0663 NO
+187: Step = 0.0586. State: 2.6270, 5.5811, 4.4318, Total Error =    24.9249 NO
+188: Step = 0.0293. State: 2.6270, 5.5518, 4.4318, Total Error =    20.8010 NO
+189: Step = -0.0293. State: 2.6270, 5.4932, 4.4318, Total Error =    26.4510 NO
+190: Step = -0.0146. State: 2.6270, 5.5078, 4.4318, Total Error =     0.0000 OK
+Current state accomplishes conditions
