@@ -9,20 +9,46 @@
 
 ## Requirements
 
-- An updated version of Python 3
-- `RPi.GPIO`: For accessing the GPIO on the Raspberry Pi
-- `numpy`: For vector manipulation
-- `scipy`: For the optimization algorithms
+- An updated version of Python 3. See testing environment below.
+- `RPi.GPIO`: For accessing the GPIO on the Raspberry Pi: https://pypi.org/project/RPi.GPIO/
+- `spidev`: For accessing the SPI bus: https://pypi.org/project/spidev/
+- `numpy`: For vector manipulation: https://pypi.org/project/numpy/
+- `scipy`: For the optimization algorithms: https://pypi.org/project/scipy/
 - `socketscpi`: For communication with SCPI commands over sockets.
     - docs: https://socketscpi.readthedocs.io/en/latest/index.html
     - original repo: https://github.com/morgan-at-keysight/socketscpi
     - backup fork in case it's unavailable: https://github.com/dpmj/socketscpi
+
 
 Execute this code on a virtual environment for safety. In the root folder of this code (reconf-optimizer, where `main.py` is):
 ```bash
 python -m venv venv  # creates the virtual environment named venv on folder ./venv/
 source venv/bin/activate  # activates the virtual environment
 pip install -r requirements.txt  # automatically installs any required dependencies
+```
+
+## Testing environment
+
+This code has been tested in this environment:
+
+- VNA IDN: `Rohde-Schwarz,ZNB20-2Port,1311601062101657,3.32`
+- Raspberry Pi 3 Model B
+- OS: 
+    - Raspberry Pi OS with desktop (64-bit) December 5th 2023 (Debian 12 Bookworm)
+    - `uname -a` output: `Linux raspberrypi 6.1.0-rpi8-rpi-v8 #1 SMP PREEMPT Debian 1:6.1.73-1+rpt1 (2024-01-25) aarch64 GNU/Linux`
+- Python 3.11.2
+- Pip and setuptools:
+```txt
+pip==23.0.1
+setuptools==66.1.1
+```
+- Dependencies:
+```txt
+RPi.GPIO==0.7.1
+spidev==3.6
+numpy==1.26.4
+scipy==1.12.0
+socketscpi==2023.6.0
 ```
 
 # Network configuration

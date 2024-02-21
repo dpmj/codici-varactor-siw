@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 
-import socketscpi
-import numpy as np
-
-
 """Docstring
 Manages the SPI communication with the Rohde-Schwarz ZNB20 VNA using socketscpi
 IDN: Rohde-Schwarz,ZNB20-2Port,1311601062101657,3.32
 Author: Juan Del Pino Mena 
 """
+
+
+import socketscpi
+import numpy as np
+
 
 # Defines
 
@@ -44,6 +45,7 @@ def close():
     vna.close()
     vna = None
 
+
 def error_check():
     """
     Retrieves errors in the VNA
@@ -71,7 +73,6 @@ def setup(sweep_config):
     f_min = sweep_config["f_min"]
     f_max = sweep_config["f_max"]
     n_points = sweep_config["n_points"]
-    freq = sweep_config["freq"]
     
     # ####################################################################################
     # Reset
@@ -185,10 +186,8 @@ def measure_once(sweep_config):
     data = vna.query_binary_values('CALC:DATA:ALL? FDAT', datatype='f')
     
     meas = data.reshape(8, n_points)  # Reshape: 8 columns, of N_POINTS rows.
-    meas = meas  # traspose
+    meas = meas.T  # traspose
 
     mat = np.concatenate((freq, meas), axis=1)  # build the measurement s2p matrix
     
     return mat
-
-

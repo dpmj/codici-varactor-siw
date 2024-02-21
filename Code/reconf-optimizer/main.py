@@ -21,6 +21,7 @@ __email__ = "jdelpin@iteam.upv.es"
 __status__ = ""
 
 
+import sys
 import csv
 import os
 import logging as log
@@ -60,32 +61,31 @@ SWEEP_CONFIG = {
 # Results are saved in a folder named 'outputs/{timestamp}/'
 # containing: logs, historic and last-iteration, optimized (or best-effort) s2p parameters
 
-timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+TIMESTAMP = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
-base_folder = f"./output"
-folder = f"{base_folder}/{timestamp}"
-
-try:
-   os.mkdir(base_folder)
-except FileExistsError:
-   pass
+BASE_FOLDER = "./output"
+FOLDER = f"{BASE_FOLDER}/{TIMESTAMP}"
 
 try:
-   os.mkdir(folder)
+    os.mkdir(BASE_FOLDER)
 except FileExistsError:
-   pass
+    pass
 
-log_file = f"{folder}/messages-{timestamp}.log"
-s2p_file = f"{folder}/response-{timestamp}.s2p"
-csv_file = f"{folder}/historic-{timestamp}.csv"
+try:
+    os.mkdir(FOLDER)
+except FileExistsError:
+    pass
+
+log_file = f"{FOLDER}/messages-{TIMESTAMP}.log"
+s2p_file = f"{FOLDER}/response-{TIMESTAMP}.s2p"
+csv_file = f"{FOLDER}/historic-{TIMESTAMP}.csv"
 
 
 # ########################################################################################
 # LOGGING
 
-logging.basicConfig(filename=logfile, 
-                    filemode='a', 
-                    format='%(name)s - %(levelname)s - %(message)s')
+log.basicConfig(filename=log_file, filemode='a',
+                format='%(name)s - %(levelname)s - %(message)s')
 
 
 # ########################################################################################
@@ -94,19 +94,20 @@ logging.basicConfig(filename=logfile,
 print("Reconfigurable SIW Filter optimizer for Raspberry Pi + R&S ZNB20 2-Port VNA")
 print(f"Version: {__version__}")
 print(f"Author: {__author__} <{__email__}>")
-print(f"GAM - iTEAM - UPV - 2024\n\n")
+print("GAM - iTEAM - UPV - 2024\n\n")
 print("----------------------------------------------------------------------")
-print(f"TIMESTAMP: {timestamp}")
-print(f"SESSION OUTPUTS: {folder}")
+print(f"TIMESTAMP: {TIMESTAMP}")
+print(f"SESSION OUTPUTS: {FOLDER}")
 print("----------------------------------------------------------------------")
 
 log.info("Reconfigurable SIW Filter optimizer for Raspberry Pi + R&S ZNB20 2-Port VNA")
-log.info(f"Version {__version__}")
-log.info(f"Author: {__author__} <{__email__}>")
-log.info(f"GAM - iTEAM - UPV - 2024")
-log.info(f"TIMESTAMP: {timestamp}")
-log.info(f"SESSION OUTPUTS: {folder}")
-log.info(f"SESSION CONFIG: host={HOST}:{PORT}, timeout={TIMEOUT}, sweep=[{F_MIN}, {F_MAX}, {N_POINTS}]")
+log.info("Version: %s", __version__)
+log.info("Author: %s <%s>", __author__, __email__)
+log.info("GAM - iTEAM - UPV - 2024")
+log.info("TIMESTAMP: %s", TIMESTAMP)
+log.info("SESSION OUTPUTS: %s", FOLDER)
+log.info("SESSION CONFIG: host=%s:%d, timeout=%d, sweep=[%e, %e, %d]",
+         HOST, PORT, TIMEOUT, F_MIN, F_MAX, N_POINTS)
 
 
 # ########################################################################################
@@ -119,20 +120,20 @@ DEV_IDN = ""
 try:
     VNA.open(host=HOST, port=PORT, timeout=TIMEOUT)  # Open connection with the VNA
     print(f"Connection opened with {HOST}:{PORT}, timeout: {TIMEOUT} s")
-    log.info(f"Connection opened with {HOST}:{PORT}, timeout: {TIMEOUT} s")
+    log.info("Connection opened with %s:%d, timeout: %d s", HOST, PORT, TIMEOUT)
 
     DEV_IDN = VNA.identify()  # Identifies the instrument
     print(f"Device IDN:\n{DEV_IDN}")
-    log.info(f"Device IDN: {DEV_IDN}")
+    log.info("Device IDN: %s", DEV_IDN)
 
     VNA.setup(SWEEP_CONFIG)  # Reset and setup the instrument to a known base state
-    print(f"Sweep configuration set")
-    log.info(f"Sweep configuration set")
+    print("Sweep configuration set")
+    log.info("Sweep configuration set")
 
 except Exception as e:
-    print(f"ERROR SETTING UP THE VNA:\n{e}")
-    log.error(f"ERROR SETTING UP THE VNA:{e}")
-    exit()
+    print(f"ERROR SETTING UP THE VNA:\n{str(e)}")
+    log.error("ERROR SETTING UP THE VNA: %s", str(e))
+    sys.exit()
     
 
 # ########################################################################################
@@ -146,17 +147,17 @@ try:
     log.info("GPIO initialized")
 
     DAC.init_SPI()  # Init SPI device
-    print(f"SPI initialized")
-    log.info(f"SPI initialized")
+    print("SPI initialized")
+    log.info("SPI initialized")
     
     DAC.power_up_DAC()  # Set registers in the DAC, power up channels B,C,D
-    print(f"DAC channels B,C,D powered up")
-    log.info(f"DAC channels B,C,D powered up")
+    print("DAC channels B,C,D powered up")
+    log.info("DAC channels B,C,D powered up")
 
 except Exception as e:
-    print(f"ERROR SETTING UP THE DAC:\n{e}")
-    log.error(f"ERROR SETTING UP THE DAC:{e}")
-    exit()
+    print(f"ERROR SETTING UP THE DAC:\n{str(e)}")
+    log.error("ERROR SETTING UP THE DAC: %s", str(e))
+    sys.exit()
 
 
 # ########################################################################################
@@ -175,12 +176,12 @@ MASKS.append(OPT.add_mask(sparam='S21', orientation='<', value=-15, flow=3.9, fh
 try:
     OPT.check_masks(masks=MASKS, sweep_config=SWEEP_CONFIG)  
     print("Masks checked")
-    log.info(f"Masks checked. Masks: {MASKS}")
+    log.info("Masks checked. Masks: %s", str(MASKS))
 
-except Exception as e:
-    print(f"MASKS ARE NOT CORRECTLY SETUP:\n{e}")
-    log.error(f"MASKS ARE NOT CORRECTLY SETUP:{e}")
-    exit()
+except AssertionError as e:
+    print(f"MASKS ARE NOT CORRECTLY SETUP:\n{str(e)}")
+    log.error("MASKS ARE NOT CORRECTLY SETUP: %s", str(e))
+    sys.exit()
 
 
 # ########################################################################################
@@ -195,15 +196,15 @@ try:
     res, historic = OPT.optimize(vna=VNA, dac=DAC, masks=MASKS, sweep_config=SWEEP_CONFIG)
 
 except Exception as e:
-    print(f"ERROR DURING OPTIMIZATION:\n{e}")
-    log.error(f"ERROR DURING OPTIMIZATION:{e}")
+    print(f"ERROR DURING OPTIMIZATION:\n{str(e)}")
+    log.error("ERROR DURING OPTIMIZATION: %s", str(e))
     exit()
 
 # ########################################################################################
 # SAVE RESULTS
 
 # Write historic into a csv file
-with open(csv_file, 'w', newline='') as f:
+with open(csv_file, 'w', newline='', encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerows(historic)
 
@@ -212,15 +213,15 @@ mat = VNA.measure_once(sweep_config=SWEEP_CONFIG)  # get optimized measurement
 S2P.mat2file(path=s2p_file, mat=mat, device_idn=DEV_IDN)  # save s2p file
 
 # Output results
-print(f"OPTIMIZATION ENDED. Results saved in folder: {folder}") 
+print(f"OPTIMIZATION ENDED. Results saved in folder: {FOLDER}") 
 print(f"Optimization status: Success={res.success}")
 print(f"Optimized varactor voltages={res.x}")
 print(f"Optimizer messages: {res.message}")
 
-log.info(f"OPTIMIZATION ENDED. Results saved in folder: {folder}") 
-log.info(f"Optimization status: Success={res.success}")
-log.info(f"Optimized varactor voltages={res.x}")
-log.info(f"Optimizer messages: {res.message}")
+log.info("OPTIMIZATION ENDED. Results saved in folder: %s", FOLDER) 
+log.info("Optimization status: Success=%s", str(res.success))
+log.info("Optimized varactor voltages=%s", str(res.x))
+log.info("Optimizer messages: %s", str(res.message))
 
 
 # ########################################################################################
@@ -235,7 +236,7 @@ try:
     DAC.close_GPIO()
 
 except Exception as e:
-    print(f"ERROR DURING SHUTDOWN:\n{e}")
-    log.error(f"ERROR DURING SHUTDOWN:{e}")
-    exit()
+    print(f"ERROR DURING SHUTDOWN:\n{str(e)}")
+    log.error("ERROR DURING SHUTDOWN: %s", str(e))
+    sys.exit()
 

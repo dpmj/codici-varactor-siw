@@ -11,7 +11,7 @@ Jose Vicente Martínez Sánchez de Rojas <josevmart@iteam.upv.es>
 
 
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import minimize, Bounds
 
 
 def add_mask(sparam, orientation, value, flow, fhigh, weight):
@@ -29,8 +29,8 @@ def add_mask(sparam, orientation, value, flow, fhigh, weight):
     return {'sparam': sparam,  # parameter to optimize
             'orientation': orientation,  # orientation: greater than, less than ('<','>')
             'value': value,  # value to compare to in the opt.: e.g.: S11 < -20 (dB)
-            'flow': freq_lim_low,  # Lower frequency limit, in GHz
-            'fhigh': freq_lim_high,  # Upper frequency limit, in GHz
+            'flow': flow,  # Lower frequency limit, in GHz
+            'fhigh': fhigh,  # Upper frequency limit, in GHz
             'weight': weight}  # Weight in the optimization algorithm
 
 
@@ -58,16 +58,13 @@ def check_masks(masks, sweep_config):
         sparam = mask['sparam']
         orientation = mask['orientation']
         
-        if flow < f_min:
-            raise Exception(f"flow cannnot be lower than F_MIN.\nMask: {mask}")
-        if fhigh > f_max:
-            raise Exception(f"fhigh cannnot be greater than F_MAX.\nMask: {mask}")
-        if flow > fhigh:
-            raise Exception(f"flow cannnot be greater than fhigh.\nMask: {mask}")
-        if sparam not in valid_sparam:
-            raise Exception(f"Unvalid S-param. Allowed: {valid_sparam}\nMask: {mask}")
-        if orientation not in valid_orientation:
-            raise Exception(f"Unvalid orientation. Allowed: {valid_orientation}\nMask: {mask}")
+        assert flow >= f_min, f"flow cannnot be lower than F_MIN.\nMask: {mask}"
+        assert fhigh <= f_max, f"fhigh cannnot be greater than F_MAX.\nMask: {mask}"
+        assert flow <= fhigh, f"flow cannnot be greater than fhigh.\nMask: {mask}"
+        assert sparam in valid_sparam, f"Unvalid S-param. Allowed: {valid_sparam}\n \
+            Mask: {mask}"
+        assert orientation in valid_orientation, f"Unvalid orientation. Allowed: \
+            {valid_orientation}\nMask: {mask}"
 
 
 def eval_error(mat, masks, sweep_config):
@@ -78,7 +75,7 @@ def eval_error(mat, masks, sweep_config):
     :param masks: optimization mask (list of dicts, format: see addwindow() func.)
 
     mat format:
-    Npoints rows
+    n_points rows
     9 cols: f[Hz], s11(mag,pha)[dB], s21 (mag,pha)[dB], s12(mag,pha)[dB], s22(mag,pha)[dB]
     """
 
@@ -92,8 +89,10 @@ def eval_error(mat, masks, sweep_config):
     # check matrix dimensions
     valid_shape = (n_points, 9)
     shape = np.shape(mat)
-    if (shape != valid_shape):  # check number of rows and cols
-        raise Exception(f"Unexpected matrix shape: {shape}. Expected: {valid_shape}\n")
+
+    # check number of rows and cols
+    assert shape == valid_shape, f"Unexpected matrix shape: {shape}. \
+        Expected: {valid_shape}\n"
     
     error = 0  # total error, added in every iteration of mask check
     
@@ -142,7 +141,9 @@ def opt_func(x, vna, dac, masks, sweep_config):
     """
     dac.set_voltage(x)  # Sets DAC channel voltages according to the optimizer
     mat = vna.measure_once(sweep_config)  # Measures the filter response and gets the s2p
-    return eval_error(mat=mat, masks=masks)  # Evaluates the error with current config
+
+    # Evaluates the error with current config
+    return eval_error(mat=mat, masks=masks, sweep_config=sweep_config)  
 
 
 historic = []
@@ -161,7 +162,6 @@ def optimize(vna, dac, masks, sweep_config):
     """
     Calls the optimizer on the 
     """
-
     bounds = Bounds([0, 30],  # ChB limits (volts)
                     [0, 30],  # ChC limits (volts)
                     [0, 30])  # ChD limits (volts)
@@ -178,5 +178,3 @@ def optimize(vna, dac, masks, sweep_config):
                    callback=opt_callback)  # variable limits
 
     return res, historic
-
-

@@ -37,6 +37,7 @@ def init_GPIO(LDAC=DEFAULT_LDAC_PIN, CLR=DEFAULT_CLR_PIN):
     GPIO.setup(CLR, GPIO.OUT)
     GPIO.output(CLR, 1)
 
+
 def close_GPIO():
     """
     Resets GPIOs
@@ -50,7 +51,7 @@ def init_SPI(device=DEFAULT_SPI_DEV, freq=DEFAULT_SPI_FREQ):
     :param device: SPI device number
     :param freq: SPI clock frequency (Hz)
     """
-    spi = spidev.SpiDev()
+    spi = spidev.SpiDev()  # Redefining SPI object -- Not pretty but works
     bus = 0
     spi.open(bus,device)
     spi.max_speed_hz = freq
@@ -90,18 +91,17 @@ def set_voltage(vector):
     :param vector: 3-position vector of voltages to set according to each channel
     """
 
-    for j in range(len(vector)):
+    for j, voltage in enumerate(vector):
 
         # clips voltages to the maximum=30 and minimum=0, for safety
-        if vector[j] < 0:
-            vector[j] = 0
-
-        elif vector[j] > 30:
-            vector[j] = 30
+        if voltage < 0:
+            voltage = 0
+        elif voltage > 30:
+            voltage = 30
 
         # transforms the digit into a 12-bit range
         # // : floor division
-        digit = int((vector[j] * 4095) // 30)  # important! 4095, not 4096!
+        digit = int((voltage * 4095) // 30)  # important! 4095, not 4096!
 
         digit_bytes = digit & 0x0FFF  # mask : put 0's in the leftmost part
         digit_bytes = digit_bytes | ((int(j + 2)) << 12)  # select channel
@@ -111,5 +111,3 @@ def set_voltage(vector):
         a = digit_bytes >> 8  # high part
 
         spi.xfer2([a, b])
-
-
