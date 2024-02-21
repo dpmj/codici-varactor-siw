@@ -14,9 +14,9 @@ import numpy as np
 from scipy.optimize import minimize
 
 
-def addwindow(sparam, orientation, value, flow, fhigh, weight):
+def add_mask(sparam, orientation, value, flow, fhigh, weight):
     """
-    Defines an optimization window
+    Defines an optimization mask dictionary in a standard format
     :param sparam: S-parameter to optimize: S11, S12, S21, S22. String.
     :param orientation: orientation: greater than, less than ('<','>')
     :param value: value to compare to in the opt, in dB: e.g.: S11 < -20 (dB)
@@ -34,18 +34,25 @@ def addwindow(sparam, orientation, value, flow, fhigh, weight):
             'weight': weight}  # Weight in the optimization algorithm
 
 
-def checkmasks(masks, f_min, f_max):
+def check_masks(masks, sweep_config):
     """
     Checks mask in a masks list
     :param masks: optimization mask (list of dicts, format: see addwindow() func.)
     :param mat: s2p data matrix,
     """
 
+    # Unpack sweep config for convenience
+    f_min = sweep_config["f_min"]
+    f_max = sweep_config["f_max"]
+
+    # Define valid parameters
     valid_sparam = ("S11", "S12", "S21", "S22")
     valid_orientation = ("<", ">")
 
+    # Check masks
     for mask in masks:
         
+        # unpack mask
         flow = mask['flow']
         fhigh = mask['fhigh']
         sparam = mask['sparam']
@@ -63,7 +70,7 @@ def checkmasks(masks, f_min, f_max):
             raise Exception(f"Unvalid orientation. Allowed: {valid_orientation}\nMask: {mask}")
 
 
-def evalerror(mat, masks):
+def eval_error(mat, masks, sweep_config):
     """
     Evaluates the error, comparing the filter response to the windows. 
 
@@ -75,16 +82,15 @@ def evalerror(mat, masks):
     9 cols: f[Hz], s11(mag,pha)[dB], s21 (mag,pha)[dB], s12(mag,pha)[dB], s22(mag,pha)[dB]
     """
 
-    # indicates the column index in the s2p matrix where the mangitude of each s-param is. 
-    sparam_mag_col = {"S11": 1,
-                      "S21": 3,
-                      "S12": 5,
-                      "S22": 7}
-    
-    # checkmasks(masks)  # Check masks. This should be done only once at the beginning, but whatever
+    # Unpack sweep config for convenience
+    n_points = sweep_config["n_points"]
+    freq = sweep_config["freq"]
+
+    # indicates the column index in the s2p matrix where the magnitude of each s-param is. 
+    sparam_mag_col = {"S11": 1, "S21": 3, "S12": 5, "S22": 7}
     
     # check matrix dimensions
-    valid_shape = (N_POINTS, 9)
+    valid_shape = (n_points, 9)
     shape = np.shape(mat)
     if (shape != valid_shape):  # check number of rows and cols
         raise Exception(f"Unexpected matrix shape: {shape}. Expected: {valid_shape}\n")
@@ -110,37 +116,48 @@ def evalerror(mat, masks):
         # objective frequency. In the argmax() search, the FREQ array is flipped to ensure
         # that the found index does not narrow the defined window.
         
-        flow_index = (len(FREQ) - 1) - np.argmax(FREQ[::-1] <= flow)
-        fhigh_index = np.argmax(FREQ >= fhigh)
+        flow_index = (len(freq) - 1) - np.argmax(freq[::-1] <= flow)
+        fhigh_index = np.argmax(freq >= fhigh)
 
         # extracts sub-matrix of relevant s-param values from mat
         s_param_values = mat[flow_index:fhigh_index + 1, sparam_mag_col[sparam]]
         diff = value - s_param_values  # difference vector (how far from value?)
     
         if orientation == '>':  # 'greater than' the 'value'
-            mask_error = weight * np.sum(diff[diff > 0])  # only sum them if diff > 0
+            mask_error = weight * np.sum(diff[diff > 0])  # only sum if diff > 0
         
         else:  # 'smaller than' the 'value'
-            mask_error = weight * np.abs(np.sum(diff[diff < 0]))  # only sum them if diff < 0
+            mask_error = weight * np.abs(np.sum(diff[diff < 0]))  # only sum if diff < 0
 
         error += mask_error
 
     return error
 
 
-def optfunc(x, vna, dac, masks):
+def opt_func(x, vna, dac, masks, sweep_config):
     """
     Implements the function to optimize.
     Measures from the VNA and sets DAC voltages
     :param x: 3-pos vector which sets the status of the DACs (variables to optimize)
     """
-
     dac.set_voltage(x)  # Sets DAC channel voltages according to the optimizer
-    mat = vna.measure_once()  # Measures the filter response and gets the s2p matrix
-    return evalerror(mat=mat, masks=masks)  # Evaluates the error with current config
+    mat = vna.measure_once(sweep_config)  # Measures the filter response and gets the s2p
+    return eval_error(mat=mat, masks=masks)  # Evaluates the error with current config
 
 
-def optimize(vna, dac, masks):
+historic = []
+
+def opt_callback(result):
+    """
+    A callback function which is called at the end of every iteration of the optimization. 
+    Saves intermediate data in an historic
+    :param intermediate_result: scipy.optimize.OptimizeResult object
+    """
+    # Iter number, function result, function input variables
+    historic.append((result.nit, result.fun, result.x))
+
+
+def optimize(vna, dac, masks, sweep_config):
     """
     Calls the optimizer on the 
     """
@@ -151,14 +168,15 @@ def optimize(vna, dac, masks):
 
     x0 = [0, 0, 0]  # initial state
 
-    res = minimize(optfunc,  # variable to optimize
+    res = minimize(opt_func,  # variable to optimize
                    x0=x0,  # vector of variables
-                   args=[vna, dac, masks],
+                   args=[vna, dac, masks, sweep_config],
                    method='nelder-mead', 
                    options={'xatol': 1e-4,  # Accepted error for convergence
                             'disp': True},  # Print convergence messages
-                   bounds=bounds)  # variable limits
+                   bounds=bounds,
+                   callback=opt_callback)  # variable limits
 
-    return res
+    return res, historic
 
 

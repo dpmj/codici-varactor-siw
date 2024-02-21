@@ -1,0 +1,4 @@
+numpy
+scipy
+socketscpi
+RPi.GPIO

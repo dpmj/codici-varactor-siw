@@ -12,11 +12,11 @@ import spidev  # SPI bus
 
 # Defines
 
-DEFAULT_LDAC_PIN = 25  # GPIO pin for LDAC
-DEFAULT_CLR_PIN = 5  # GPIO pin for CLR
+DEFAULT_LDAC_PIN = 25  # GPIO pin for LDAC. Default = 25
+DEFAULT_CLR_PIN = 5  # GPIO pin for CLR. Default = 5
 
-DEFAULT_SPI_DEV = 1  # SPI device number
-DEFAULT_SPI_FREQ = 16e6  # SPI clk frequency
+DEFAULT_SPI_DEV = 1  # SPI device number. Default = 1
+DEFAULT_SPI_FREQ = 16e6  # SPI clk frequency. Default = 16e9 
 
 spi = None
 
@@ -63,7 +63,7 @@ def close_SPI():
     spi.close()
 
 
-def powerup_DAC():
+def power_up_DAC():
     """
     Writes configuration to AD5504 control register. See AD5504 datasheet, page 16
     0x70 : 0111 0000 : RW=0, A1=1,A2=1,A3=1 (writing to the control register)
@@ -74,7 +74,7 @@ def powerup_DAC():
     spi.xfer2([0x70, 0x38])  
 
 
-def powerdown_DAC():
+def power_down_DAC():
     """
     Writes configuration to AD5504 control register. See AD5504 datasheet, page 16
     0x70 : 0111 0000 : RW=0, A1=1,A2=1,A3=1 (writing to the control register)

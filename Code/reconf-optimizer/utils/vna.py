@@ -18,11 +18,6 @@ DEFAULT_VNA_HOST = "10.10.0.152"  # [str] Instrument IP address.
 DEFAULT_VNA_PORT = 5025  # [int] Instrument listening port. 
 DEFAULT_VNA_TIMEOUT = 10  # [s] How many seconds to wait for a response. 
 
-F_MIN = 0  # Parameters that will be updated with setup() function
-F_MAX = 0
-N_POINTS = 0
-FREQ = np.array([])
-
 vna = None
 
 
@@ -56,7 +51,14 @@ def error_check():
     vna.err_check()
 
 
-def setup(f_min, f_max, n_points):
+def identify():
+    """
+    Identifies the device
+    """
+    return vna.instId
+
+
+def setup(sweep_config):
     """
     Performs a reset and setups the VNA with default known parameters. 
     Connection must be opened first.
@@ -65,13 +67,11 @@ def setup(f_min, f_max, n_points):
     :param n_points: number of points for each trace
     """
 
-    F_MAX = f_max
-    F_MIN = f_min
-    N_POINTS = n_points
-    FREQ = np.linspace(F_MIN, F_MAX, N_POINTS)  # Frequency vector
-    FREQ = np.array([FREQ]).T
-    
-    print(vna.instId)  # Identifies the instrument
+    # Unpack sweep config for convenience
+    f_min = sweep_config["f_min"]
+    f_max = sweep_config["f_max"]
+    n_points = sweep_config["n_points"]
+    freq = sweep_config["freq"]
     
     # ####################################################################################
     # Reset
@@ -162,7 +162,7 @@ def setup(f_min, f_max, n_points):
     vna.err_check()
 
 
-def measure_once():
+def measure_once(sweep_config):
     """
     Performs a sweep and measure all data. Returns the measurement as a matrix.
     Connection must be opened first and setup done.
@@ -172,6 +172,10 @@ def measure_once():
     9 cols: f[Hz], s11(mag,pha)[dB], s21 (mag,pha)[dB], s12(mag,pha)[dB], s22(mag,pha)[dB]
     """
         
+    # Unpack sweep config
+    n_points = sweep_config["n_points"]
+    freq = np.array([sweep_config["freq"]]).T  # modify freq so it can be concatenated
+
     vna.write("INIT:IMM; *WAI")  # Perform a single sweep and wait until completed
     
     vna.write('format:border swap')  # Swapped byte order
@@ -180,10 +184,10 @@ def measure_once():
     
     data = vna.query_binary_values('CALC:DATA:ALL? FDAT', datatype='f')
     
-    meas = data.reshape(8, N_POINTS)  # Reshape: 8 columns, of N_POINTS rows.
+    meas = data.reshape(8, n_points)  # Reshape: 8 columns, of N_POINTS rows.
     meas = meas  # traspose
 
-    mat = np.concatenate((FREQ, meas), axis=1)  # build the measurement s2p matrix
+    mat = np.concatenate((freq, meas), axis=1)  # build the measurement s2p matrix
     
     return mat
 

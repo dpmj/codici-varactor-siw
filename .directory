@@ -5,10 +5,7 @@ Icon=folder-build
 GroupedSorting=true
 HeaderColumnWidths=284,118,72,111
 SortRole=type
-Timestamp=2024,2,19,18,46,34.521
+Timestamp=2024,2,20,21,6,32.234
 Version=4
 ViewMode=1
 VisibleRoles=Details_text,Details_modificationtime,Details_size,Details_type,CustomizedDetails
-
-[Settings]
-HiddenFilesShown=true
