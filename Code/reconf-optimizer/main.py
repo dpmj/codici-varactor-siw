@@ -84,7 +84,7 @@ csv_file = f"{FOLDER}/historic-{TIMESTAMP}.csv"
 # ########################################################################################
 # LOGGING
 
-log.basicConfig(filename=log_file, filemode='a',
+log.basicConfig(filename=log_file, filemode='a', level=log.INFO,
                 format='%(name)s - %(levelname)s - %(message)s')
 
 
