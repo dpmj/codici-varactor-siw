@@ -94,7 +94,7 @@ log.basicConfig(filename=log_file, filemode='a', level=log.INFO,
 print("Reconfigurable SIW Filter optimizer for Raspberry Pi + R&S ZNB20 2-Port VNA")
 print(f"Version: {__version__}")
 print(f"Author: {__author__} <{__email__}>")
-print("GAM - iTEAM - UPV - 2024\n\n")
+print("GAM - iTEAM - UPV - 2024\n")
 print("----------------------------------------------------------------------")
 print(f"TIMESTAMP: {TIMESTAMP}")
 print(f"SESSION OUTPUTS: {FOLDER}")
@@ -113,7 +113,7 @@ log.info("SESSION CONFIG: host=%s:%d, timeout=%d, sweep=[%e, %e, %d]",
 # ########################################################################################
 # VNA SETUP
 
-print("\n\nVNA SETUP ------------------------------------------------------------")
+print("\nVNA SETUP ------------------------------------------------------------")
 
 DEV_IDN = ""
 
@@ -139,7 +139,7 @@ except Exception as e:
 # ########################################################################################
 # DAC SETUP
 
-print("\n\nDAC SETUP ------------------------------------------------------------")
+print("\nDAC SETUP ------------------------------------------------------------")
 
 try:
     DAC.init_GPIO()  # Init GPIOs
@@ -163,13 +163,13 @@ except Exception as e:
 # ########################################################################################
 # OPTIMIZER SETUP
 
-print("\n\nOPTIMIZER SETUP ------------------------------------------------------")
+print("\nOPTIMIZER SETUP ------------------------------------------------------")
 
 # Set goals
 MASKS = [] # List of masks (goal windows)
 MASKS.append(OPT.add_mask(sparam='S11', orientation='<', value=-20, flow=3, fhigh=3.1, weight=20))
 MASKS.append(OPT.add_mask(sparam='S21', orientation='>', value=-2, flow=3, fhigh=3.1, weight=20))
-MASKS.append(OPT.add_mask(sparam='S21', orientation='<', value=-15, flow=1, fhigh=2.5, weight=1))
+MASKS.append(OPT.add_mask(sparam='S21', orientation='<', value=-15, flow=2, fhigh=2.5, weight=1))
 MASKS.append(OPT.add_mask(sparam='S21', orientation='<', value=-15, flow=3.9, fhigh=5.5, weight=1))
 
 # Checks if masks are correctly defined
@@ -187,7 +187,7 @@ except AssertionError as e:
 # ########################################################################################
 # OPTIMIZER LOOP
 
-print("\n\nOPTIMIZER LOOP -------------------------------------------------------")
+print("\nOPTIMIZER LOOP -------------------------------------------------------")
 
 res = None
 historic = None
@@ -227,7 +227,7 @@ log.info("Optimizer messages: %s", str(res.message))
 # ########################################################################################
 # Shutdown everything
 
-print("\n\nSHUTDOWN -------------------------------------------------------------")
+print("\nSHUTDOWN -------------------------------------------------------------")
 
 try:
     VNA.close()

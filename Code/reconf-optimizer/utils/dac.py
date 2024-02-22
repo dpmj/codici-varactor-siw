@@ -16,7 +16,7 @@ DEFAULT_LDAC_PIN = 25  # GPIO pin for LDAC. Default = 25
 DEFAULT_CLR_PIN = 5  # GPIO pin for CLR. Default = 5
 
 DEFAULT_SPI_DEV = 1  # SPI device number. Default = 1
-DEFAULT_SPI_FREQ = 16e6  # SPI clk frequency. Default = 16e9 
+DEFAULT_SPI_FREQ = int(16e6)  # SPI clk frequency. Default = int(16e9)
 
 spi = None
 
@@ -48,9 +48,10 @@ def close_GPIO():
 def init_SPI(device=DEFAULT_SPI_DEV, freq=DEFAULT_SPI_FREQ):
     """
     Initializes SPI device at specified frequency
-    :param device: SPI device number
-    :param freq: SPI clock frequency (Hz)
+    :param device: SPI device number, integer
+    :param freq: SPI clock frequency (Hz), integer
     """
+    global spi  # dirty but works
     spi = spidev.SpiDev()  # Redefining SPI object -- Not pretty but works
     bus = 0
     spi.open(bus,device)

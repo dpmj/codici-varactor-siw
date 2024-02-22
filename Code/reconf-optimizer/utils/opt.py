@@ -42,8 +42,8 @@ def check_masks(masks, sweep_config):
     """
 
     # Unpack sweep config for convenience
-    f_min = sweep_config["f_min"]
-    f_max = sweep_config["f_max"]
+    f_min = int(sweep_config["f_min"] * 1e-9)  # Hz to GHz to compare with masks
+    f_max = int(sweep_config["f_max"] * 1e-9)
 
     # Define valid parameters
     valid_sparam = ("S11", "S12", "S21", "S22")
@@ -148,33 +148,37 @@ def opt_func(x, vna, dac, masks, sweep_config):
 
 historic = []
 
-def opt_callback(result):
+def opt_callback(intermediate_result):
     """
     A callback function which is called at the end of every iteration of the optimization. 
     Saves intermediate data in an historic
     :param intermediate_result: scipy.optimize.OptimizeResult object
+    intermediate_result MUST be called this way, otherwise scipy wont pass the argument to
+    the callback correctly
     """
-    # Iter number, function result, function input variables
-    historic.append((result.nit, result.fun, result.x))
+    # Log into historic the
+    historic.append((intermediate_result.fun,  # function result
+                     intermediate_result.x))  # function input variables
 
 
 def optimize(vna, dac, masks, sweep_config):
     """
-    Calls the optimizer on the 
+    Calls the optimizer
     """
-    bounds = Bounds([0, 30],  # ChB limits (volts)
-                    [0, 30],  # ChC limits (volts)
-                    [0, 30])  # ChD limits (volts)
+    # Define limits
+    bounds = ((0, 30),  # ChB limits (volts)
+              (0, 30),  # ChC limits (volts)
+              (0, 30))  # ChD limits (volts)
 
     x0 = [0, 0, 0]  # initial state
 
     res = minimize(opt_func,  # variable to optimize
                    x0=x0,  # vector of variables
-                   args=[vna, dac, masks, sweep_config],
-                   method='nelder-mead', 
+                   args=(vna, dac, masks, sweep_config),  # Tuple of arguments for opt_func
+                   method='nelder-mead',  # Optimization algorithm
                    options={'xatol': 1e-4,  # Accepted error for convergence
                             'disp': True},  # Print convergence messages
-                   bounds=bounds,
-                   callback=opt_callback)  # variable limits
+                   bounds=bounds,  # limits
+                   callback=opt_callback)  # call this function after every iteration
 
     return res, historic
