@@ -15,9 +15,9 @@ import numpy as np
 
 # Defines
 
-DEFAULT_VNA_HOST = "10.10.0.152"  # [str] Instrument IP address. 
-DEFAULT_VNA_PORT = 5025  # [int] Instrument listening port. 
-DEFAULT_VNA_TIMEOUT = 10  # [s] How many seconds to wait for a response. 
+DEFAULT_VNA_HOST = "10.10.0.152"  # [str] Instrument IP address.
+DEFAULT_VNA_PORT = 5025  # [int] Instrument listening port.
+DEFAULT_VNA_TIMEOUT = 10  # [s] How many seconds to wait for a response.
 
 vna = None
 
@@ -31,10 +31,11 @@ def open(host=DEFAULT_VNA_HOST, port=DEFAULT_VNA_PORT, timeout=DEFAULT_VNA_TIMEO
     :param timeout: int, default 10 s
     :param verboseErrCheck: whether the instrument should explain errors. Default: false.
     """
+    global vna  # to overwrite the vna object without having to declare a whole ass class
 
-    vna = socketscpi.SocketInstrument(ipAddress=host, 
-                                      port=port, 
-                                      timeout=timeout, 
+    vna = socketscpi.SocketInstrument(ipAddress=host,
+                                      port=port,
+                                      timeout=timeout,
                                       verboseErrCheck=verboseErrCheck)
 
 
@@ -43,7 +44,6 @@ def close():
     Closes communication with the VNA
     """
     vna.close()
-    vna = None
 
 
 def error_check():

@@ -1,0 +1,8 @@
+root - INFO - Reconfigurable SIW Filter optimizer for Raspberry Pi + R&S ZNB20 2-Port VNA
+root - INFO - Version: 0.0.1
+root - INFO - Author: Juan Del Pino Mena <jdelpin@iteam.upv.es>
+root - INFO - GAM - iTEAM - UPV - 2024
+root - INFO - TIMESTAMP: 2024-02-21-15-01-54
+root - INFO - SESSION OUTPUTS: ./output/2024-02-21-15-01-54
+root - INFO - SESSION CONFIG: host=10.10.0.152:5025, timeout=10, sweep=[2.000000e+09, 6.000000e+09, 201]
+root - ERROR - ERROR SETTING UP THE VNA: timed out
