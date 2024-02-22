@@ -174,7 +174,7 @@ MASKS.append(OPT.add_mask(sparam='S21', orientation='<', value=-15, flow=3.9, fh
 
 # Checks if masks are correctly defined
 try:
-    OPT.check_masks(masks=MASKS, sweep_config=SWEEP_CONFIG)  
+    OPT.check_masks(masks=MASKS, sweep_config=SWEEP_CONFIG)
     print("Masks checked")
     log.info("Masks checked. Masks: %s", str(MASKS))
 

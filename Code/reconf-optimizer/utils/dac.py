@@ -12,11 +12,12 @@ import spidev  # SPI bus
 
 # Defines
 
-DEFAULT_LDAC_PIN = 25  # GPIO pin for LDAC. Default = 25
-DEFAULT_CLR_PIN = 5  # GPIO pin for CLR. Default = 5
+DEFAULT_LDAC_PIN = 25  # GPIO pin for LDAC. integer. Default = 25
+DEFAULT_CLR_PIN = 5  # GPIO pin for CLR. integer. Default = 5
 
-DEFAULT_SPI_DEV = 1  # SPI device number. Default = 1
-DEFAULT_SPI_FREQ = int(16e6)  # SPI clk frequency. Default = int(16e9)
+DEFAULT_SPI_BUS = 0  # SPI bus. integer. Default = 0
+DEFAULT_SPI_DEV = 1  # SPI device number. integer. Default = 1
+DEFAULT_SPI_FREQ = 9000000  # SPI clk frequency. integer. Default = 9 MHz
 
 spi = None
 
@@ -30,10 +31,16 @@ def init_GPIO(LDAC=DEFAULT_LDAC_PIN, CLR=DEFAULT_CLR_PIN):
     GPIO.setmode(GPIO.BCM)
 
     # Set a LDAC pulse
+    # LDAC PIN: Load DAC Input. Pulsing this pin low allows any or all DAC registers to be
+    # updated if the input registers have new data. This allows all DAC outputs to update
+    # simultaneously. Alternatively, this pin can be tied permanently low.
     GPIO.setup(LDAC, GPIO.OUT)
     GPIO.output(LDAC, 0)
 
     # Set a CLR level
+    # Asynchronous Clear Input. The CLR input is falling edge sensitive. When CLR is low,
+    # all LDAC pulses are ignored. When CLR is high, the input register and the DAC
+    # register are set to 0x000 and the outputs to zero scale.
     GPIO.setup(CLR, GPIO.OUT)
     GPIO.output(CLR, 1)
 
@@ -45,16 +52,17 @@ def close_GPIO():
     GPIO.cleanup()
 
 
-def init_SPI(device=DEFAULT_SPI_DEV, freq=DEFAULT_SPI_FREQ):
+def init_SPI(bus=DEFAULT_SPI_BUS, device=DEFAULT_SPI_DEV, freq=DEFAULT_SPI_FREQ):
     """
     Initializes SPI device at specified frequency
     :param device: SPI device number, integer
     :param freq: SPI clock frequency (Hz), integer
     """
     global spi  # dirty but works
+
     spi = spidev.SpiDev()  # Redefining SPI object -- Not pretty but works
-    bus = 0
-    spi.open(bus,device)
+
+    spi.open(bus, device)
     spi.max_speed_hz = freq
 
 
@@ -67,13 +75,33 @@ def close_SPI():
 
 def power_up_DAC():
     """
-    Writes configuration to AD5504 control register. See AD5504 datasheet, page 16
-    0x70 : 0111 0000 : RW=0, A1=1,A2=1,A3=1 (writing to the control register)
-    0x38 : 0011 1000 : ChB,ChC,ChD power up (ChA power down)
+    Writes configuration to AD5504 control register. 
     """
+    # See AD5504 datasheet, page 16, 17
+    # HIGH PART = 0x70 : 0111 0000 : RW=0, A1=1, A2=1, A3=1: writing to the control reg
+    # LOW PART  = 0x38 : 0011 1000 : ChA power down; ChB, ChC, ChD power up,
+    #                                outputs connected to AGND through a 20 kOhm resistor
 
+    spi.xfer2([0x70, 0x38])  # Write to the control reg
     # xfer2: Performs an SPI transaction. Chip-select should be held active between blocks
-    spi.xfer2([0x70, 0x38])  
+
+    # A write to the control register must be followed by another write operation. The
+    # second write operation can be a write to a DAC input register or a NOP write
+    spi.xfer2([0x00, 0x00])  # NOP write
+
+
+def read_control_reg_DAC():
+    """
+    Reads the control register of the AD5504 DAC
+    """
+    return spi.xfer2([0xF0, 0x00])
+
+
+# def read_channel_reg_DAC():
+#     """
+#     Reads a channel register of the AD5504 DAC
+#     """
+#     return spi.xfer2([0xF0, 0x00])
 
 
 def power_down_DAC():
@@ -82,7 +110,6 @@ def power_down_DAC():
     0x70 : 0111 0000 : RW=0, A1=1,A2=1,A3=1 (writing to the control register)
     0x38 : 0000 0000 : All channels power down
     """
-
     spi.xfer2([0x70, 0x00])
 
 
