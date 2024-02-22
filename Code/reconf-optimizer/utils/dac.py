@@ -97,11 +97,17 @@ def read_control_reg_DAC():
     return spi.xfer2([0xF0, 0x00])
 
 
-# def read_channel_reg_DAC():
-#     """
-#     Reads a channel register of the AD5504 DAC
-#     """
-#     return spi.xfer2([0xF0, 0x00])
+def read_channel_regs_DAC():
+    """
+    Reads a channel registers of the AD5504 DAC
+    """
+    values = []
+    values.append(spi.xfer2([0x90, 0x00]))
+    values.append(spi.xfer2([0xA0, 0x00]))
+    values.append(spi.xfer2([0xB0, 0x00]))
+    values.append(spi.xfer2([0xC0, 0x00]))
+
+    return values
 
 
 def power_down_DAC():

@@ -292,10 +292,14 @@ def shutdown():
 
 def dac_test():
 
+    print(DAC.read_control_reg_DAC())
+
     while True:
         ch_B = int(input("ch_B="))
         ch_C = int(input("ch_C="))
         ch_D = int(input("ch_D="))
+
+        print(DAC.read_channel_regs_DAC())
 
         # set arbitrary voltages in DACs
         DAC.set_voltage(vector=[ch_B, ch_C, ch_D])
