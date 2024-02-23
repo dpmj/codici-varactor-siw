@@ -292,17 +292,26 @@ def shutdown():
 
 def dac_test():
 
-    print(DAC.read_control_reg_DAC())
+    reg = DAC.read_control_reg_DAC()
+    print(f"{reg[0]:02X} {reg[1]:02X}")
 
     while True:
         ch_B = int(input("ch_B="))
         ch_C = int(input("ch_C="))
         ch_D = int(input("ch_D="))
 
-        print(DAC.read_channel_regs_DAC())
+        print("Before:")
+        regs = DAC.read_channel_regs_DAC()
+        for reg in regs:
+            print(f"{reg[0]:02X} {reg[1]:02X}")
 
         # set arbitrary voltages in DACs
         DAC.set_voltage(vector=[ch_B, ch_C, ch_D])
+
+        print("After:")
+        regs = DAC.read_channel_regs_DAC()
+        for reg in regs:
+            print(f"{reg[0]:02X} {reg[1]:02X}")
 
         # measure response, show in screen
         VNA.measure_once(sweep_config=SWEEP_CONFIG)
