@@ -87,14 +87,14 @@ def power_up_DAC():
 
     # A write to the control register must be followed by another write operation. The
     # second write operation can be a write to a DAC input register or a NOP write
-    spi.xfer2([0x00, 0x00])  # NOP write
+    spi.xfer2([0x00])  # NOP write
 
 
 def read_control_reg_DAC():
     """
     Reads the control register of the AD5504 DAC
     """
-    return spi.xfer2([0xF0, 0x00])
+    return spi.xfer2([0xF0])
 
 
 def read_channel_regs_DAC():
@@ -102,12 +102,18 @@ def read_channel_regs_DAC():
     Reads a channel registers of the AD5504 DAC
     """
     values = []
-    values.append(spi.xfer2([0x90, 0x00]))
-    values.append(spi.xfer2([0xA0, 0x00]))
-    values.append(spi.xfer2([0xB0, 0x00]))
-    values.append(spi.xfer2([0xC0, 0x00]))
+    values.append(spi.xfer2([0x90]))
+    values.append(spi.xfer2([0xA0]))
+    values.append(spi.xfer2([0xB0]))
+    values.append(spi.xfer2([0xC0]))
 
     return values
+
+
+def transfer(data):
+    """
+    """
+    return spi.xfer2(data)
 
 
 def power_down_DAC():

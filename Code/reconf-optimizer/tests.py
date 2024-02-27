@@ -290,10 +290,33 @@ def shutdown():
     sys.exit()
 
 
-def dac_test():
+def reg2str(reg):
+    """
+    prints a 16bit register
+    """
+    return f"{reg[0]:02X} {reg[1]:02X} | {reg[0]:08b} {reg[1]:8b}"
 
+
+def dac_test():
+    """
+    arbitrary test of the DAC
+    """
+    
+    # Setup the DAC (from dac_setup)
+    DAC.init_GPIO()  # Init GPIOs
+    DAC.init_SPI()  # Init SPI device
+
+    # Read unset control register
     reg = DAC.read_control_reg_DAC()
-    print(f"{reg[0]:02X} {reg[1]:02X}")
+    print(f"Control reg, before = {reg2str(reg)}")
+    
+    # DAC.power_up_DAC()  # Set registers in the DAC, power up channels B,C,D
+    DAC.transfer([0x70, 0x28])
+
+    # Read changed control register
+    reg = DAC.read_control_reg_DAC()
+    print(f"Control reg, after  = {reg2str(reg)}")
+
 
     while True:
         ch_B = int(input("ch_B="))
@@ -302,19 +325,19 @@ def dac_test():
 
         print("Before:")
         regs = DAC.read_channel_regs_DAC()
-        for reg in regs:
-            print(f"{reg[0]:02X} {reg[1]:02X}")
+        for i, reg in enumerate(regs):
+            print(f"Data reg {i} = {reg2str(reg)}")
 
         # set arbitrary voltages in DACs
         DAC.set_voltage(vector=[ch_B, ch_C, ch_D])
 
         print("After:")
         regs = DAC.read_channel_regs_DAC()
-        for reg in regs:
-            print(f"{reg[0]:02X} {reg[1]:02X}")
+        for i, reg in enumerate(regs):
+            print(f"Data reg {i} = {reg2str(reg)}")
 
         # measure response, show in screen
-        VNA.measure_once(sweep_config=SWEEP_CONFIG)
+        # VNA.measure_once(sweep_config=SWEEP_CONFIG)
 
         # wait for user to confirm exit
         if input("shutdown? [y/n]") in ("y", "Y"):
@@ -326,8 +349,8 @@ def test():
     """
     Define tests to be executed here
     """
-    vna_setup()
-    dac_setup()
+    # vna_setup()
+    # dac_setup()
     dac_test()
 
 

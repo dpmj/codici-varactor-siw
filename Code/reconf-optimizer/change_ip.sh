@@ -5,5 +5,7 @@
 # Before running this script, connect the raspberry pi and the VNA together with the same ethernet cable
 
 sudo ip addr add 10.10.0.150/8 dev eth0  # change ip addr
-sleep 2  # wait for a moment
-ping -c 4 10.10.0.152  # check connectivity
+sleep 1  # wait for a moment
+ping -c 2 10.10.0.152  # check connectivity
+
+source venv/bin/activate  # activate the virtual environment
