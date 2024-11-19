@@ -266,35 +266,35 @@ def shutdown():
     try:
         VNA.close()
     except Exception as e:
-        print(f"ERROR IN VNA SHUTDOWN:\n{str(e)}")
-        log.error("ERROR IN VNA SHUTDOWN: %s", str(e))
+        print(f"ERROR DURING SHUTDOWN:\n{str(e)}")
+        log.error("ERROR DURING SHUTDOWN: %s", str(e))
 
     try:
         DAC.power_down_DAC()
     except Exception as e:
-        print(f"ERROR IN DAC SHUTDOWN:\n{str(e)}")
-        log.error("ERROR IN DAC SHUTDOWN: %s", str(e))
+        print(f"ERROR DURING SHUTDOWN:\n{str(e)}")
+        log.error("ERROR DURING SHUTDOWN: %s", str(e))
 
     try:
         DAC.close_SPI()
     except Exception as e:
-        print(f"ERROR IN SPI SHUTDOWN:\n{str(e)}")
-        log.error("ERROR IN SPI SHUTDOWN: %s", str(e))
+        print(f"ERROR DURING SHUTDOWN:\n{str(e)}")
+        log.error("ERROR DURING SHUTDOWN: %s", str(e))
 
     try:
         DAC.close_GPIO()
     except Exception as e:
-        print(f"ERROR IN GPIO SHUTDOWN:\n{str(e)}")
-        log.error("ERROR IN GPIO SHUTDOWN: %s", str(e))
+        print(f"ERROR DURING SHUTDOWN:\n{str(e)}")
+        log.error("ERROR DURING SHUTDOWN: %s", str(e))
 
-    print("Shutdown complete")
+    sys.exit()
 
 
-def reg16_to_str(reg):
+def reg2str(reg):
     """
     prints a 16bit register
     """
-    return f"0x{reg[0]:02X} 0x{reg[1]:02X} | 0b{reg[0]:08b} 0b{reg[1]:08b}"
+    return f"{reg[0]:02X} {reg[1]:02X} | {reg[0]:08b} {reg[1]:8b}"
 
 
 def dac_test():
@@ -307,92 +307,42 @@ def dac_test():
     DAC.init_SPI()  # Init SPI device
 
     # Read unset control register
-    try:
-        reg = DAC.read_control_reg_DAC()
-        print(f"Control reg, before = {reg16_to_str(reg)}")
-        # print(f"Control reg, before = {reg}")
-    except Exception as e:
-        print(f"Error:\n{str(e)}")
-        log.error("Error: %s", str(e))
+    reg = DAC.read_control_reg_DAC()
+    print(f"Control reg, before = {reg2str(reg)}")
     
     # DAC.power_up_DAC()  # Set registers in the DAC, power up channels B,C,D
-    ctrl_msg = [0x70, 0x38]
-    DAC.transfer([0x70, 0x38])
-    print(f"Control reg, sent   = {reg16_to_str(ctrl_msg)}")
+    DAC.transfer([0x70, 0x28])
 
     # Read changed control register
-    try:
-        reg = DAC.read_control_reg_DAC()
-        print(f"Control reg, after  = {reg16_to_str(reg)}")
-        # print(f"Control reg, after  = {reg}")
-    except Exception as e:
-        print(f"Error:\n{str(e)}")
-        log.error("Error: %s", str(e))
+    reg = DAC.read_control_reg_DAC()
+    print(f"Control reg, after  = {reg2str(reg)}")
+
 
     while True:
+        ch_B = int(input("ch_B="))
+        ch_C = int(input("ch_C="))
+        ch_D = int(input("ch_D="))
 
-        try:
-            ch_B = int(input("ch_B="))
-            ch_C = int(input("ch_C="))
-            ch_D = int(input("ch_D="))
+        print("Before:")
+        regs = DAC.read_channel_regs_DAC()
+        for i, reg in enumerate(regs):
+            print(f"Data reg {i} = {reg2str(reg)}")
 
-            print("Before:")
-            regs = DAC.read_channel_regs_DAC()
-            for i, reg in enumerate(regs):
-                print(f"Data reg {i} = {reg16_to_str(reg)}")
-                # print(f"Data reg {i} = {reg}")
+        # set arbitrary voltages in DACs
+        DAC.set_voltage(vector=[ch_B, ch_C, ch_D])
 
-            # set arbitrary voltages in DACs
-            DAC.set_voltage(vector=[ch_B, ch_C, ch_D])
+        print("After:")
+        regs = DAC.read_channel_regs_DAC()
+        for i, reg in enumerate(regs):
+            print(f"Data reg {i} = {reg2str(reg)}")
 
-            print("After:")
-            regs = DAC.read_channel_regs_DAC()
-            for i, reg in enumerate(regs):
-                print(f"Data reg {i} = {reg16_to_str(reg)}")
-                # print(f"Data reg {i} = {reg}")
-
-            # measure response, show in screen
-            # VNA.measure_once(sweep_config=SWEEP_CONFIG)
-
-        except KeyboardInterrupt:
-            print("Exit")
-            shutdown()
-            break
-
-        except Exception as e:
-            print(f"Error:\n{str(e)}")
-            log.error("Error: %s", str(e))
+        # measure response, show in screen
+        # VNA.measure_once(sweep_config=SWEEP_CONFIG)
 
         # wait for user to confirm exit
         if input("shutdown? [y/n]") in ("y", "Y"):
             shutdown()
             break
-
-
-def turn_on_dac():
-    print("turning on")
-    try:
-        DAC.init_GPIO()
-        print("turned on")
-    except Exception as e:
-        print(f"ERROR IN POWERUP:\n{str(e)}")
-        log.error("ERROR IN POWERUP: %s", str(e))
-        
-
-def turn_off_dac():
-    print("turning off")
-    try:
-        DAC.close_GPIO()
-        print("shutdown")
-    except Exception as e:
-        print(f"ERROR IN SHUTDOWN:\n{str(e)}")
-        log.error("ERROR IN SHUTDOWN: %s", str(e))
-
-
-def power_on_off():
-    turn_on_dac()
-    input("Press enter to shutdown:")
-    turn_off_dac()
 
 
 def test():
@@ -402,7 +352,6 @@ def test():
     # vna_setup()
     # dac_setup()
     dac_test()
-    # power_on_off()
 
 
 if __name__ == "__main__":

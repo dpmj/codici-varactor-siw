@@ -1,4 +1,7 @@
 */venv/
 */__pycache__/
+**/venv/
+**/__pycache__/
 Docs
 Code/old_code/__pycache__/
+Hardware/kicad-library-utils-master/

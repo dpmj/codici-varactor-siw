@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "dac_hat")(type "KiCad")(uri "${KIPRJMOD}/dac_hat.kicad_sym")(options "")(descr ""))
+)

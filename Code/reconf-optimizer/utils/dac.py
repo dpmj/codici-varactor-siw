@@ -12,17 +12,20 @@ import spidev  # SPI bus
 
 # Defines
 
+DEFAULT_ENABLE_PIN = 18  # GPIO pin for DC/DC ENABLE
+
 DEFAULT_LDAC_PIN = 25  # GPIO pin for LDAC. integer. Default = 25
 DEFAULT_CLR_PIN = 5  # GPIO pin for CLR. integer. Default = 5
 
 DEFAULT_SPI_BUS = 0  # SPI bus. integer. Default = 0
 DEFAULT_SPI_DEV = 1  # SPI device number. integer. Default = 1
-DEFAULT_SPI_FREQ = 9000000  # SPI clk frequency. integer. Default = 9 MHz
+DEFAULT_SPI_FREQ = 1000000  # SPI clk frequency. integer. Max. (read operation) = 9 MHz
+DEFAULT_SPI_MODE = 1  # spi mode: https://pypi.org/project/spidev/ https://picockpit.com/raspberry-pi/spi-the-serial-peripheral-interface/
 
 spi = None
 
 
-def init_GPIO(LDAC=DEFAULT_LDAC_PIN, CLR=DEFAULT_CLR_PIN):  
+def init_GPIO(LDAC=DEFAULT_LDAC_PIN, CLR=DEFAULT_CLR_PIN, ENABLE=DEFAULT_ENABLE_PIN):  
     """
     Initializes DAC GPIO ports
     :param LDAC: port number for LDAC
@@ -44,31 +47,45 @@ def init_GPIO(LDAC=DEFAULT_LDAC_PIN, CLR=DEFAULT_CLR_PIN):
     GPIO.setup(CLR, GPIO.OUT)
     GPIO.output(CLR, 1)
 
+    # Enable DC/DC converter
+    # Power on the Raspi HAT
+    GPIO.setup(ENABLE, GPIO.OUT)
+    GPIO.output(ENABLE, 1)
 
-def close_GPIO():
+
+def close_GPIO(LDAC=DEFAULT_LDAC_PIN, CLR=DEFAULT_CLR_PIN, ENABLE=DEFAULT_ENABLE_PIN):
     """
-    Resets GPIOs
+    Resets GPIOs. SPI should be closed first (close_SPI())
     """
-    GPIO.cleanup()
+    GPIO.output(CLR, 1)  # Clear registers
+    GPIO.output(ENABLE, 0) # Power down the Raspi HAT
+    GPIO.cleanup()  # Deactivate GPIOs. 
 
 
-def init_SPI(bus=DEFAULT_SPI_BUS, device=DEFAULT_SPI_DEV, freq=DEFAULT_SPI_FREQ):
+def init_SPI(bus=DEFAULT_SPI_BUS, device=DEFAULT_SPI_DEV, freq=DEFAULT_SPI_FREQ, mode=DEFAULT_SPI_MODE):
     """
     Initializes SPI device at specified frequency
     :param device: SPI device number, integer
     :param freq: SPI clock frequency (Hz), integer
     """
-    global spi  # dirty but works
+    global spi  # Not pretty but works
 
-    spi = spidev.SpiDev()  # Redefining SPI object -- Not pretty but works
+    spi = spidev.SpiDev()  # Redefining SPI object
 
-    spi.open(bus, device)
-    spi.max_speed_hz = freq
+    spi.open(bus, device)  # bus 0, device 1
+    spi.max_speed_hz = freq  # 16 MHz 
+    spi.mode = mode  # mode = 1
+    spi.lsbfirst = False
+    # spi.bits_per_word = 8
+    # spi.cshigh = True
+    # spi.loop = False
+    # spi.threewire = False
+    # spi.read0 = False
 
 
 def close_SPI():
     """
-    Closes SPI connection and resets GPIOs
+    Closes SPI connection.
     """
     spi.close()
 
@@ -87,14 +104,14 @@ def power_up_DAC():
 
     # A write to the control register must be followed by another write operation. The
     # second write operation can be a write to a DAC input register or a NOP write
-    spi.xfer2([0x00])  # NOP write
+    spi.xfer2([0x00])  # No Operation (NOP) write
 
 
 def read_control_reg_DAC():
     """
     Reads the control register of the AD5504 DAC
     """
-    return spi.xfer2([0xF0])
+    return spi.xfer2([0xF0, 0x00])
 
 
 def read_channel_regs_DAC():
@@ -102,16 +119,17 @@ def read_channel_regs_DAC():
     Reads a channel registers of the AD5504 DAC
     """
     values = []
-    values.append(spi.xfer2([0x90]))
-    values.append(spi.xfer2([0xA0]))
-    values.append(spi.xfer2([0xB0]))
-    values.append(spi.xfer2([0xC0]))
+    values.append(spi.xfer2([0x90, 0x00]))
+    values.append(spi.xfer2([0xA0, 0x00]))
+    values.append(spi.xfer2([0xB0, 0x00]))
+    values.append(spi.xfer2([0xC0, 0x00]))
 
     return values
 
 
 def transfer(data):
     """
+    spi.xfer2() wrapper
     """
     return spi.xfer2(data)
 
@@ -147,7 +165,7 @@ def set_voltage(vector):
         digit_bytes = digit_bytes | ((int(j + 2)) << 12)  # select channel
 
         # Divide the 2 bytes in two bytes: 8 MSB (high part) and 8 LSB (low part)
-        b = digit_bytes  # it's going to be clipped at its 8 LSB by the function
+        b = digit_bytes  # Low part -- it's going to be clipped at 8 LSB by the xfer2 function
         a = digit_bytes >> 8  # high part
 
         spi.xfer2([a, b])
