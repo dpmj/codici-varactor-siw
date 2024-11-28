@@ -1,0 +1,14 @@
+root - INFO - Reconfigurable SIW Filter optimizer for Raspberry Pi + R&S ZNB20 2-Port VNA
+root - INFO - TEST FILE
+root - INFO - Version: 0.0.0
+root - INFO - Author: Juan Del Pino Mena <jdelpin@iteam.upv.es>
+root - INFO - GAM - iTEAM - UPV - 2024
+root - INFO - TIMESTAMP: 2024-11-26-11-48-59
+root - INFO - SESSION OUTPUTS: ./output/2024-11-26-11-48-59
+root - INFO - SESSION CONFIG: host=10.10.0.152:5025, timeout=10, sweep=[2.000000e+09, 6.000000e+09, 201]
+root - INFO - Connection opened with 10.10.0.152:5025, timeout: 10 s
+root - INFO - Device IDN: Rohde-Schwarz,ZNB20-2Port,1311601062101657,3.32
+root - INFO - Sweep configuration set
+root - INFO - GPIO initialized
+root - INFO - SPI initialized
+root - INFO - DAC channels B,C,D powered up

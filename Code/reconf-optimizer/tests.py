@@ -59,6 +59,28 @@ SWEEP_CONFIG = {
     "freq": np.linspace(F_MIN, F_MAX, N_POINTS)  # freq vector
 }
 
+# optimization setup. See docs:
+# https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html
+
+OPT_METHOD = "nelder-mead"  # opt method. Different methods have different options. (IN DICT BELOW). string
+
+INITIAL_STATE = [1.0, 2.0, 0.5]  # initial conditions. list
+TOLERANCE = 0.5  # Accepted error for convergence. float
+
+# Define limits (boundaries). tuple of tuples.
+BOUNDS = ((0.0, 30.0),  # ChB limits (volts)
+          (0.0, 30.0),  # ChC limits (volts)
+          (0.0, 30.0))  # ChD limits (volts)
+
+# dictionary to keep the optimizer config
+OPT_CONFIG = {
+    "initial_state": INITIAL_STATE,  # initial conditions
+    "bounds": BOUNDS,  # limits
+    "tolerance": TOLERANCE,  # Accepted error for convergence
+    "method": OPT_METHOD,
+    "opt_options": {'xatol': TOLERANCE,  # Accepted error for convergence
+                    'disp': True},  # Display convergence messages
+}
 
 # ########################################################################################
 # TIMESTAMP AND OUTPUT FILES
@@ -117,6 +139,8 @@ log.info("TIMESTAMP: %s", TIMESTAMP)
 log.info("SESSION OUTPUTS: %s", FOLDER)
 log.info("SESSION CONFIG: host=%s:%d, timeout=%d, sweep=[%e, %e, %d]",
          HOST, PORT, TIMEOUT, F_MIN, F_MAX, N_POINTS)
+log.info("OPTIMIZER CONFIG: method=%s, ic=[%f, %f, %f], tolerance=%f",
+         OPT_METHOD, INITIAL_STATE[0], INITIAL_STATE[1], INITIAL_STATE[2], TOLERANCE)
 
 
 # ########################################################################################
@@ -206,12 +230,67 @@ def opt_setup():
 
 
 # ########################################################################################
-# OPTIMIZER LOOP
+# OPTIMIZER TEST (MANUAL)
+
+def opt_test_manual():
+    """
+    """
+
+    vna_setup()
+    dac_setup()
+    opt_setup()
+
+    print("\nMANUAL OPTIMIZER TESTING -------------------------------------------------------")
+
+    while True:
+        try:
+            ch_B = float(input("ch_B="))
+            ch_C = float(input("ch_C="))
+            ch_D = float(input("ch_D="))
+
+            print("Before:")
+            regs = DAC.read_channel_regs_DAC()
+            for i, reg in enumerate(regs):
+                print(f"Data reg {i} = {reg16_to_str(reg)}")
+                # print(f"Data reg {i} = {reg}")
+
+            x = [ch_B, ch_C, ch_D]
+
+            errorval = OPT.opt_func(x, vna=VNA, dac=DAC, masks=MASKS, sweep_config=SWEEP_CONFIG)
+
+            print("After:")
+            regs = DAC.read_channel_regs_DAC()
+            for i, reg in enumerate(regs):
+                print(f"Data reg {i} = {reg16_to_str(reg)}")
+
+            print(f"Voltages [B,C,D] = [{ch_B}, {ch_C}, {ch_D}]\nError value      =  {errorval}")
+
+        except KeyboardInterrupt:
+            print("Exit")
+            shutdown()
+            break
+
+        except Exception as e:
+            print(f"Error:\n{str(e)}")
+            log.error("Error: %s", str(e))
+
+        # wait for user to confirm exit
+        if input("shutdown? [y/n]") in ("y", "Y"):
+            shutdown()
+            break
+
+
+# ########################################################################################
+# OPTIMIZER LOOP (AUTOMATIC)
 
 res = None
 historic = None
 
 def opt_loop():
+
+    vna_setup()
+    dac_setup()
+    opt_setup()
 
     print("\nOPTIMIZER LOOP -------------------------------------------------------")
 
@@ -222,12 +301,15 @@ def opt_loop():
     historic = None
 
     try:
-        res, historic = OPT.optimize(vna=VNA, dac=DAC, masks=MASKS, sweep_config=SWEEP_CONFIG)
+        res, historic = OPT.optimize(vna=VNA, dac=DAC, masks=MASKS, sweep_config=SWEEP_CONFIG, opt_config=OPT_CONFIG)
 
-    except Exception as e:
-        print(f"ERROR DURING OPTIMIZATION:\n{str(e)}")
-        log.error("ERROR DURING OPTIMIZATION: %s", str(e))
-        exit()
+    except KeyboardInterrupt:
+        print("Exit")
+
+    # except Exception as e:
+    #     print(f"Error:\n{str(e)}")
+    #     log.error("Error: %s", str(e))
+
 
 
 # ########################################################################################
@@ -399,10 +481,17 @@ def test():
     """
     Define tests to be executed here
     """
+    # power_on_off()
+    # dac_test()
+
     # vna_setup()
     # dac_setup()
-    dac_test()
-    # power_on_off()
+
+    # opt_test_manual()
+
+    opt_loop()
+    save_results()
+    shutdown()
 
 
 if __name__ == "__main__":

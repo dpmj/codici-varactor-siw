@@ -230,10 +230,31 @@ log.info("Optimizer messages: %s", str(res.message))
 print("\nSHUTDOWN -------------------------------------------------------------")
 
 try:
-    VNA.close()
-    DAC.power_down_DAC()
-    DAC.close_SPI()
-    DAC.close_GPIO()
+    try:
+        VNA.close()
+    except Exception as e:
+        print(f"ERROR IN VNA SHUTDOWN:\n{str(e)}")
+        log.error("ERROR IN VNA SHUTDOWN: %s", str(e))
+
+    try:
+        DAC.power_down_DAC()
+    except Exception as e:
+        print(f"ERROR IN DAC SHUTDOWN:\n{str(e)}")
+        log.error("ERROR IN DAC SHUTDOWN: %s", str(e))
+
+    try:
+        DAC.close_SPI()
+    except Exception as e:
+        print(f"ERROR IN SPI SHUTDOWN:\n{str(e)}")
+        log.error("ERROR IN SPI SHUTDOWN: %s", str(e))
+
+    try:
+        DAC.close_GPIO()
+    except Exception as e:
+        print(f"ERROR IN GPIO SHUTDOWN:\n{str(e)}")
+        log.error("ERROR IN GPIO SHUTDOWN: %s", str(e))
+
+    print("Shutdown complete")
 
 except Exception as e:
     print(f"ERROR DURING SHUTDOWN:\n{str(e)}")

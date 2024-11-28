@@ -133,6 +133,8 @@ def eval_error(mat, masks, sweep_config):
     return error
 
 
+# iteration = 0
+
 def opt_func(x, vna, dac, masks, sweep_config):
     """
     Implements the function to optimize.
@@ -143,7 +145,15 @@ def opt_func(x, vna, dac, masks, sweep_config):
     mat = vna.measure_once(sweep_config)  # Measures the filter response and gets the s2p
 
     # Evaluates the error with current config
-    return eval_error(mat=mat, masks=masks, sweep_config=sweep_config)  
+    errorval = eval_error(mat=mat, masks=masks, sweep_config=sweep_config)
+    
+    # global iteration 
+    
+    # iteration += 1
+    
+    # print(f"Iteration: {iteration}\tError: {errorval}", end="\n")
+
+    return errorval
 
 
 historic = []
@@ -161,24 +171,20 @@ def opt_callback(intermediate_result):
                      intermediate_result.x))  # function input variables
 
 
-def optimize(vna, dac, masks, sweep_config):
+def optimize(vna, dac, masks, sweep_config, opt_config):
     """
     Calls the optimizer
     """
-    # Define limits
-    bounds = ((0, 30),  # ChB limits (volts)
-              (0, 30),  # ChC limits (volts)
-              (0, 30))  # ChD limits (volts)
 
-    x0 = [0, 0, 0]  # initial state
+    x0 = np.array(opt_config["initial_state"])  # initial state
 
     res = minimize(opt_func,  # variable to optimize
                    x0=x0,  # vector of variables
                    args=(vna, dac, masks, sweep_config),  # Tuple of arguments for opt_func
-                   method='nelder-mead',  # Optimization algorithm
-                   options={'xatol': 1e-4,  # Accepted error for convergence
-                            'disp': True},  # Print convergence messages
-                   bounds=bounds,  # limits
+                   method=opt_config["method"],  # Optimization algorithm
+                   tol=opt_config["tolerance"],  # Accepted error for convergence
+                   options=opt_config["opt_options"],  # Print convergence messages
+                   bounds=opt_config["bounds"],  # limits
                    callback=opt_callback)  # call this function after every iteration
 
     return res, historic
